@@ -14,15 +14,7 @@ app = Flask(__name__)
 r = redis.Redis(host="redis1", port=6379, db=0)
 r.config_set('maxmemory-policy', 'allkeys-lru')
 r.flushall()
-a="""
-r1 = redis.Redis(host="redis2", port=6380, db=0)
-r1.config_set('maxmemory-policy', 'allkeys-lru')
-r1.flushall()
 
-r2 = redis.Redis(host="redis3", port=6381, db=0)
-r2.config_set('maxmemory-policy', 'allkeys-lru')
-r2.flushall()
-"""
 class SearchClient(object):
 
     def __init__(self):
@@ -46,21 +38,11 @@ def search():
     client = SearchClient()
     search = request.args['search']
     cache = r.get(search)
-   # cache1 = r1.get(search)
-   # cache2 = r2.get(search)
-    #if cache == None and cache1 == None and cache2 == None:
+
     if cache == None:
         item = client.get_url(message=search)
         r.set(search, str(item))
-        #if r_actual == 0:
-         #   r.set(search, str(item))
-            #r_actual += 1
-#        elif r_actual == 1:
- #           r1.set(search, str(item))
-  #          r_actual += 1
-   #     else:
-    #        r2.set(search, str(item))
-     #       r_actual = 0
+
 
         return render_template('index.html', datos = item, procedencia = "Datos sacados de PostgreSQL")
     
@@ -68,11 +50,6 @@ def search():
         if cache != None:
             item = cache.decode("utf-8")
             return render_template('index.html', datos = item, procedencia = "Datos sacados de Redis1")
- #       elif cache1 != None:
-#            item = cache1.decode("utf-8")
-  #          return render_template('index.html', datos = item, procedencia = "Datos sacados de Redis2")
-  #      else:
-  #          item = cache2.decode("utf-8")
-  #3          return render_template('index.html', datos = item, procedencia = "Datos sacados de Redis3")
+
 if __name__ == '__main__':
     time.sleep(25)
