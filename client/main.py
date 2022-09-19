@@ -10,7 +10,6 @@ import proto_message_pb2_grpc as pb2
 import time
 
 app = Flask(__name__)
-#r_actual = 0
 r = redis.Redis(host="redis1", port=6379, db=0)
 r.config_set('maxmemory-policy', 'allkeys-lru')
 r.flushall()
@@ -42,14 +41,32 @@ def search():
     if cache == None:
         item = client.get_url(message=search)
         r.set(search, str(item))
+        item = str(item).replace("\n", " ")
+        item = str(item).replace('"', "")
+        item = str(item).split("} web {")
+        for x in range (len(item)):
+            item[x] = item[x].split(" url: ")
+            item[x][1] = item[x][1].replace('"', "")
+            item[x][1] = item[x][1].replace('{', "")    
+            item[x][1] = item[x][1].replace('}', "")
 
-
-        return render_template('index.html', datos = item, procedencia = "Datos sacados de PostgreSQL")
+        end = time.time()
+        tiempo = end - start
+        return render_template('index.html',tiempo = tiempo, datos = item, procedencia = "Datos sacados de PostgreSQL")
     
     else:
         if cache != None:
             item = cache.decode("utf-8")
-            return render_template('index.html', datos = item, procedencia = "Datos sacados de Redis1")
-
+            item = str(item).replace("\n", " ")
+            item = str(item).replace('"', "")
+            item = str(item).split("} web {")
+            for x in range (len(item)):
+                item[x] = item[x].split(" url: ")
+                item[x][1] = item[x][1].replace('"', "")
+                item[x][1] = item[x][1].replace('{', "")
+                item[x][1] = item[x][1].replace('}', "")
+            end = time.time()
+            tiempo = end - start
+            return render_template('index.html',tiempo = tiempo, datos = item, procedencia = "Datos sacados de Redis1")
 if __name__ == '__main__':
     time.sleep(25)
