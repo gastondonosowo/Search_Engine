@@ -8,10 +8,10 @@ services:
         ports:
             - "3001:6379"
         environment:
-        - REDIS_MAXMEMORY=100mb
+        - REDIS_MAXMEMORY=10mb
         - REDIS_MAXMEMORY_POLICY=allkeys-lru
         - ALLOW_EMPTY_PASSWORD=yes
-        command: ["redis-server", "--bind", "redis","--maxmemory 100mb","--maxmemory-policy allkeys-lru"]
+        command: ["redis-server", "--bind", "redis","--maxmemory 10mb","--maxmemory-policy allkeys-lru"]
 
     #---------------------------------------POSTGRES---------------------------------------
     postgres:
