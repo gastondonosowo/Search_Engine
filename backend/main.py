@@ -14,7 +14,7 @@ class SearchService(pb2_grpc.SearchServicer):
         response = []
         message = request.message
         result = f'"{message}" '
-        query = "SELECT title,description,web FROM T1 WHERE keywords LIKE '%"+message+"%' limit 10;"
+        query = "SELECT DISTINCT title,description,web FROM T1 WHERE keywords LIKE '%"+message+"%' limit 10;"
         cursor.execute(query)
         query_res = cursor.fetchall()
         for row in query_res:
