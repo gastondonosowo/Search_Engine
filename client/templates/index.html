@@ -6,5 +6,11 @@
 
 <h4>{{procedencia}}</h4>
 
-<h5>Datos</h5>
-<p>{{datos}}</p>
+<h5>Paginas web</h5>
+{%for d in datos%} 
+<p>{{d[0]}}</p>
+<a href="{{d[1]}}">{{d[1]}}</a>
+{%endfor%}
+
+<h5>Tiempo de busqueda</h5>
+<p>{{tiempo}}</p>
